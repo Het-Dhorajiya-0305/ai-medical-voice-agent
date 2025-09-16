@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
 import User from '../model/userModel.js';
-import { json } from 'express';
 import validator from 'validator';
 
 const generateToken = async (user) => {
@@ -27,7 +26,6 @@ const generateToken = async (user) => {
         return error;
     }
 }
-
 
 const registerUser = async (req, res) => {
 
@@ -158,7 +156,6 @@ const loginUser = async (req, res) => {
 
 
 }
-
 
 const googleLogin = async (req, res) => {
 

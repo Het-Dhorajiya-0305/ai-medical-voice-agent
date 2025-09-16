@@ -8,18 +8,24 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true
-    }, 
+    },
     email: {
         type: String,
         required: true,
         unique: true
     },
-    password:{
-        type:String,
-        required:true
+    password: {
+        type: String,
+        required: true
     },
-    refreshToken:{
-        type:String
+    session: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Session'
+        }
+    ],
+    refreshToken: {
+        type: String
     }
 }, { timestamps: true })
 

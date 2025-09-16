@@ -91,11 +91,10 @@ const doctors = [
   "child fever": "Pediatrician",
   "anxiety": "Psychiatrist",
   "pregnancy": "Gynecologist",
-  "joint pain": "Orthopedic Surgeon",
+  "body pain": "Orthopedic Surgeon",
   "cancer": "Oncologist",
   "diabetes": "Endocrinologist",
   "cough": "General Physician",
-  // Add more mappings as needed
 };
 
 

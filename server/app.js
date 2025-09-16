@@ -6,6 +6,8 @@ import googleoauth from 'passport-google-oauth2'
 import passport from "passport";
 import session from "express-session";
 import { configDotenv } from "dotenv";
+import doctorRoute from "./routes/doctorRoute.js";
+import sessionRoute from "./routes/sessionRoute.js";
 
 configDotenv();
 
@@ -47,4 +49,8 @@ passport.deserializeUser((user, done) => done(null, user))
 
 
 app.use('/api/user', userRoute);
+app.use('/api/doctor', doctorRoute);
+app.use('/api/session', sessionRoute);
+
+
 export default app;
