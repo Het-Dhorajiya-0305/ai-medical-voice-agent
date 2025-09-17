@@ -18,11 +18,16 @@ function CallPage() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [currentRole, setCurrentRole] = useState(null);
   const [sentense, setSentense] = useState("");
+  const [messages, setMessages] = useState([]);
+
   const vapiRef = useRef(null);
 
   const startCall = async () => {
     if (!vapiRef.current) {
       vapiRef.current = new Vapi(VAPI_API_KEY);
+
+      vapiRef.current.start(VAPI_ASSISTANT_ID);
+
       vapiRef.current.on('call-start', () => {
         console.log('Call started');
         setConnected(true);
@@ -33,14 +38,19 @@ function CallPage() {
       });
       vapiRef.current.on('message', (message) => {
         if (message.type === 'transcript') {
-          
-          console.log(`${message.role}: ${message.transcript}`);
+
           if (message.transcriptType === 'partial') {
             setCurrentRole(message.role);
             setSentense(message.transcript);
           }
+          else if (message.transcriptType === 'final') {
+            setCurrentRole(null);
+            setSentense("");
+
+            setMessages(prev => [...prev, { text: message.transcript, role: message.role }]);
+          }
         }
-      });
+      })
       vapiRef.current.on('speech-start', () => {
         console.log('Assistant started speaking');
         setIsSpeaking(true);
@@ -50,15 +60,18 @@ function CallPage() {
         console.log('Assistant stopped speaking');
         setIsSpeaking(false);
         setCurrentRole('User');
-        setSentense("");
       });
     }
-    vapiRef.current.start(VAPI_ASSISTANT_ID);
   };
 
-  const endCall = () => {
+  const endCall = async() => {
     if (vapiRef.current) {
       vapiRef.current.stop();
+      setSentense("");
+      setCurrentRole(null);
+      setMessages([]);
+      vapiRef.current = null;
+      setConnected(false);
     }
   };
 
@@ -73,13 +86,20 @@ function CallPage() {
             <h2 className="mt-4 text-2xl font-semibold text-black">{doctor.name}</h2>
             <p className="text-gray-400 mt-1">00:00</p>
           </div>
-          <div className="flex flex-col items-center gap-3 w-1/2 max-md:w-full">
-            <div className="text-black font-semibold text-lg w-full">
-                {currentRole} :{sentense}
-            </div>
-            <div className="text-gray-500 font-semibold text-lg w-full">
-              fewfnw
-            </div>
+          <div
+            className="w-1/2 max-md:w-full overflow-y-auto h-55 rounded-lg p-4 mb-4 flex flex-col justify-end "
+            style={{ minHeight: "13rem", maxHeight: "20rem" }}
+          >
+            {messages.map((msg, index) => (
+              <div key={index} className="text-gray-500 font-semibold text-lg w-full">
+                {msg.role} : {msg.text}
+              </div>
+            ))}
+            {sentense && sentense.length > 0 && (
+              <div className="text-black font-semibold text-lg w-full">
+                {currentRole} : {sentense}
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-center">
             {!connected ? (
