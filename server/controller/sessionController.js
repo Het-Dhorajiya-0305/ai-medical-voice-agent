@@ -1,5 +1,6 @@
 import Session from "../model/sessionModel.js";
 import User from "../model/userModel.js";
+import OpenAI from "openai";
 
 const createSession = async (req, res) => {
     try {
@@ -62,35 +63,47 @@ const createSession = async (req, res) => {
 
 const generateReport = async (req, res) => {
     try {
-        const {messages,sessionId}=req.body;
+        const { messages, sessionId } = req.body;
 
-        if(!sessionId){
+        if (!sessionId) {
             return res.status(400).json({
-                success:false,
-                message:"sessionId is required"
-            })
-        }
-        
-        if(!messages || messages.length===0){
-            return res.status(400).json({
-                success:false,
-                message:"messages are required"
+                success: false,
+                message: "sessionId is required"
             })
         }
 
-        const session=await Session.findById(sessionId);
+        if (!messages || messages.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "messages are required"
+            })
+        }
 
-        if(!session){
+        const session = await Session.findById(sessionId);
+
+        if (!session) {
             return res.status(404).json({
-                success:false,
-                message:"Session not found"
+                success: false,
+                message: "Session not found"
             })
         }
 
-        const completion=await openai
+        const openai = new OpenAI({
+            apiKey: process.env.OPEN_AI_API_KEY 
+        });
+
+        const completion = await openai.chat.completions.create({
+            model:"chatgpt-4o-latest",
+            messages:[
+                {
+                    role:'system',
+                    content:REPORT_GENERATION_PROMPT
+                }
+            ]
+        })
 
     } catch (error) {
-        
+
     }
 }
 export { createSession, generateReport };
