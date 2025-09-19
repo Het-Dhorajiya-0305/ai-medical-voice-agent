@@ -1,23 +1,5 @@
 import mongoose from "mongoose";
 
-
-const reportSchema = new mongoose.Schema({
-  diagnosis: {
-    type: String,
-    required: true
-  },
-  prescribedMedicines: {
-    type: [String], 
-    default: []
-  },
-  followUp: {
-    type: String
-  },
-  doctorNotes: {
-    type: String
-  }
-}, { _id: false });
-
 const sessionSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -37,7 +19,10 @@ const sessionSchema = new mongoose.Schema({
         type: Object,
         default: {}
     },
-    report:reportSchema,
+    report:{
+        type: Object,
+        default: {}
+    },
     
 }, { timestamps: true });
 

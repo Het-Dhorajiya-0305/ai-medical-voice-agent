@@ -95,7 +95,8 @@ function CallPage() {
     }
   };
 
-  const endCall = async () => {
+  const endCall = async (e) => {
+    e.preventDefault();
     setLoader(true);
     if (vapiRef.current) {
       vapiRef.current.stop();
@@ -103,10 +104,11 @@ function CallPage() {
       setCurrentRole(null);
       setMessages([]);
       vapiRef.current = null;
-      setConnected(false);
     }
     const report = await genrateReport();
+    console.log(report);
     setLoader(false);
+    setConnected(false);
   };
 
   const genrateReport = async () => {
@@ -116,7 +118,7 @@ function CallPage() {
         sessionId
       }
 
-      const response = await axios.post(backEndUrl + 'api/session/generate-report', payload, {
+      const response = await axios.post(backEndUrl + '/api/session/generate-session', payload, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -181,7 +183,7 @@ function CallPage() {
               </button>
             ) : (
               <button className={`p-3 rounded-full bg-red-600 hover:bg-red-700 hover:cursor-pointer flex items-center gap-2 text-white text-md font-semibold ${loader ? 'bg-red-800' : ''}`}
-                onClick={endCall}
+                onClick={(e)=>endCall(e)}
               >
                 {loader ? (
                   <svg className="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

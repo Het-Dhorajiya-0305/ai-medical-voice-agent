@@ -51,8 +51,7 @@ function Description({ handleVisibility, visible }) {
             });
 
             if (response.data.success) {
-                console.log("Session created:", response.data);
-                navigate(`/medical-agent/${response.data._id}`, {
+                navigate(`/medical-agent/${response.data.newSession._id}`, {
                     state: {
                         doctor: suggestedDoctor
                     }

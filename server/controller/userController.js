@@ -130,9 +130,9 @@ const loginUser = async (req, res) => {
 
         const option = {
             httpOnly: true,
-            secure: true,
+            secure: false,
             path: "/",
-            sameSite: "none",
+            sameSite: "Lax",
             maxAge: 24 * 60 * 60 * 1000
         }
 

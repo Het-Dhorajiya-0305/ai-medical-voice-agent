@@ -5,7 +5,7 @@ const verifyUser = async (req, res, next) => {
     try {
         
         const token=req.cookies?.refreshToken;
-
+        console.log("Token in verifyUser middleware:", token);
         if (!token) {
             return res.status(404).json({
                 success: false,
