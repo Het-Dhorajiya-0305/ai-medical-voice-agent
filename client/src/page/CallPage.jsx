@@ -2,16 +2,19 @@ import React, { useState, useRef } from "react";
 import { BiPhoneCall } from "react-icons/bi";
 import Navbar from '../components/Navbar'
 import { navItemsForDashboard } from '../constant'
-import { useLocation, useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import Vapi from '@vapi-ai/web';
 import axios from "axios";
 import { backEndUrl } from "../App";
+import { toast } from "react-toastify";
 
 
 const VAPI_API_KEY = import.meta.env.VITE_VAPI_API_KEY;
 const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID;
 
 function CallPage() {
+
+  const navigate = useNavigate();
   const location = useLocation();
   const doctor = location.state?.doctor;
   const sessionId = useParams().id;
@@ -109,6 +112,11 @@ function CallPage() {
     console.log(report);
     setLoader(false);
     setConnected(false);
+    toast.success('your report has been generated successfully', {
+      autoClose: 1000
+    });
+
+    navigate('/dashboard');
   };
 
   const genrateReport = async () => {
@@ -183,7 +191,7 @@ function CallPage() {
               </button>
             ) : (
               <button className={`p-3 rounded-full bg-red-600 hover:bg-red-700 hover:cursor-pointer flex items-center gap-2 text-white text-md font-semibold ${loader ? 'bg-red-800' : ''}`}
-                onClick={(e)=>endCall(e)}
+                onClick={(e) => endCall(e)}
               >
                 {loader ? (
                   <svg className="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

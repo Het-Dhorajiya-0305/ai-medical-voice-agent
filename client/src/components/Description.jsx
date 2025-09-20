@@ -41,6 +41,7 @@ function Description({ handleVisibility, visible }) {
             console.log("Error in fetching doctor:", error);
         }
     };
+    
     const startconsultation = async () => {
         try {
             const response = await axios.post(backEndUrl + '/api/session/create-session', { doctorId: suggestedDoctor._id, note: details }, {
