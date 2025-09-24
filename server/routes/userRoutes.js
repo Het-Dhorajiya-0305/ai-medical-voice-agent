@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { googleLogin, loginUser, registerUser } from "../controller/userController.js";
+import { checkAuth, googleLogin, loginUser, logoutUser, registerUser } from "../controller/userController.js";
 import passport from "passport";
+import verifyUser from "../middleware/authUser.js";
 
 
 const userRoute = Router();
 
 userRoute.post('/register', registerUser);
 userRoute.post('/login', loginUser);
+userRoute.get('/logout',verifyUser,logoutUser);
+userRoute.get('/auth',verifyUser,checkAuth);
 
 // google auth routes
 

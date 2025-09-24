@@ -130,9 +130,9 @@ const loginUser = async (req, res) => {
 
         const option = {
             httpOnly: true,
-            secure: false,
+            secure: true,
             path: "/",
-            sameSite: "Lax",
+            sameSite: "None",
             maxAge: 24 * 60 * 60 * 1000
         }
 
@@ -206,4 +206,60 @@ const googleLogin = async (req, res) => {
         .redirect(`${process.env.FRONTEND_URL}/oauth/success?refreshToken=${token}`)
 
 }
-export { registerUser, loginUser, googleLogin };
+
+const logoutUser = async (req, res) => {
+    try {
+        const id = req.userId;
+
+        const user = await User.findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    refreshToken: ""
+                }
+            },
+            {
+                new: true
+            })
+
+            
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Unauthorized user"
+            })
+        }
+
+        const option = {
+            httpOnly: true,
+            secure: true,
+            path: "/",
+            sameSite: "None",
+            maxAge: 24 * 60 * 60 * 1000
+        }
+
+
+        return res
+            .status(200)
+            .clearCookie("refreshToken", option)
+            .json({
+                success: true,
+                message: "user successfully logout!!"
+            })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+const checkAuth = asyncHandler(async (req, res) => {
+    return res.status(200).json({
+        success: true,
+        message: "authorizes user"
+    })
+
+})
+export { registerUser, loginUser, googleLogin, logoutUser, checkAuth };

@@ -26,7 +26,7 @@ function HistoryComponent() {
             const response = await axios.get(backEndUrl + '/api/session/getallsessions', {
                 withCredentials: true
             })
-
+            console.log(response.data)
             if (response.data.success) {
                 setSessions(response.data.sessions);
             }

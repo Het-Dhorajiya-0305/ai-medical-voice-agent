@@ -6,9 +6,7 @@ const navItems = [
 
 const navItemsForDashboard = [
     { name: 'Home', path: '/dashboard' },
-    { name: 'History', path: '/history' },
-    { name: 'Pricing', path: '/pricing' },
-    { name: 'Profile', path: '/profile' },
+    { name: 'History', path: '/history' }
 ]
 
 const doctors = [

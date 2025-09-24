@@ -188,4 +188,49 @@ const deleteSession = async (req, res) => {
         })
     }
 }
-export { createSession, generateReport, deleteSession };
+
+const getallsessions=async (req,res) => {
+    try {
+        const userId=req.userId;
+
+        if(!userId){
+            return res.status(400).json({
+                success:false,
+                message:"Unauthorized user"
+            })
+        }
+
+        const sessions=await Session.find({userId});
+
+        if(!sessions){
+            return res.status(404).json({
+                success:false,
+                message:"No sessions found"
+            })
+        }
+
+        const detailedSessions=[];
+
+        for(const ses of sessions){
+            const doctor=await Doctors.findById(ses.doctorId);
+            detailedSessions.push({
+                session:ses,
+                doctor
+            })
+        }
+
+        console.log(detailedSessions);
+
+        return res.status(200).json({
+            success:true,
+            message:"Sessions fetched successfully",
+            sessions:detailedSessions
+        })
+
+    } catch (error) {
+        
+    }
+}
+
+
+export { createSession, generateReport, deleteSession,getallsessions };
