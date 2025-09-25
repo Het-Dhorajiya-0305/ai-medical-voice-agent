@@ -63,8 +63,8 @@ function HistoryComponent() {
                                 <tr className='border-t border-gray-300 hover:bg-gray-200 px-2' key={index}>
                                     <td className='w-1/4 text-start py-4'>{ses.doctor.specialization}</td>
                                     <td className='w-1/4 text-start'>{ses.session.note}</td>
-                                    <td className='w-1/4 text-start'>{moment(new Date(ses.session.report.timestamp)).fromNow()}</td>
-                                    <td className='w-1/4 text-end'><button className='font-semibold hover:border-b-[1px] hover:cursor-pointer' onClick={(e) => handleReportVisibility(e, ses)}>View Report</button></td>
+                                    <td className='w-1/4 text-start'>{moment(new Date(ses.session.report?.timestamp)).fromNow()}</td>
+                                    <td className='w-1/4 text-end'><button className='font-semibold hover:border-b-[1px] hover:cursor-pointer disabled:hidden' onClick={(e) => handleReportVisibility(e, ses)} disabled={!ses.session.report}>View Report</button></td>
                                 </tr>
                             ))
                         }

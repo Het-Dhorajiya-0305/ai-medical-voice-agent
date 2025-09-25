@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 
 
 const VAPI_API_KEY = import.meta.env.VITE_VAPI_API_KEY;
-const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID;
 
 function CallPage() {
 
@@ -31,6 +30,7 @@ function CallPage() {
   const startCall = async () => {
     setLoader(true);
     if (!vapiRef.current) {
+      
       vapiRef.current = new Vapi(VAPI_API_KEY);
 
       console.log(doctor);
@@ -99,6 +99,7 @@ function CallPage() {
   };
 
   const endCall = async (e) => {
+
     e.preventDefault();
     setLoader(true);
     if (vapiRef.current) {

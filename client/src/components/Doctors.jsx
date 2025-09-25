@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { doctors } from '../constant'
+import { doctors, symptomSpecializationMap } from '../constant'
 import axios from 'axios';
 import { backEndUrl } from '../App';
+import { useNavigate } from 'react-router';
+
 
 function Doctors() {
     const [doctorsList, setDoctorsList] = useState(doctors);
+    const navigate = useNavigate();
+
 
     const fetchDoctors = async () => {
         try {
-            const response=await axios.get(backEndUrl+'/api/doctor/doctors');
-            if(response.data.success){
+            const response = await axios.get(backEndUrl + '/api/doctor/doctors');
+            if (response.data.success) {
                 setDoctorsList(response.data.doctors);
             }
 
@@ -19,7 +23,41 @@ function Doctors() {
     }
     useEffect(() => {
         fetchDoctors();
-    },[])
+    }, [])
+
+    const handleConsultation = async (doctor) => {
+        try {
+            let matchedSymptom = null;
+            for (const [key, value] of Object.entries(symptomSpecializationMap)) {
+                if (value === doctor.specialization) {
+                    matchedSymptom = key;
+                    break;
+                }
+            }
+            const payload = {
+                doctorId: doctor._id,
+                note: `I have a concern related to ${matchedSymptom}.`
+            };
+
+            const response = await axios.post(backEndUrl + '/api/session/create-session', payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            })
+
+            if (response.data.success) {
+                navigate(`/medical-agent/${response.data.newSession._id}`, {
+                    state: {
+                        doctor: doctor
+                    }
+                });
+            }
+
+        } catch (error) {
+            console.log("Error in starting consultation:", error);
+        }
+    }
 
     return (
         <div className='p-4 px-30 text-left max-md:px-10 max-lg:px-20'>
@@ -34,7 +72,7 @@ function Doctors() {
                             <p className='text-sm text-gray-500'>{doctor.description}</p>
                         </div>
                         <div className="flex justify-center">
-                            <button className='w-3/4 bg-black text-white p-2 px-4 text-[15px] font-semibold rounded-xl hover:cursor-pointer hover:bg-gray-800 transition-all duration-300'>Start Consultation</button>
+                            <button className='w-3/4 bg-black text-white p-2 px-4 text-[15px] font-semibold rounded-xl hover:cursor-pointer hover:bg-gray-800 transition-all duration-300' onClick={() => handleConsultation(doctor)}>Start Consultation</button>
                         </div>
                     </div>
                 ))}

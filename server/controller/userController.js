@@ -222,7 +222,7 @@ const logoutUser = async (req, res) => {
                 new: true
             })
 
-            
+
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -255,11 +255,18 @@ const logoutUser = async (req, res) => {
     }
 }
 
-const checkAuth = asyncHandler(async (req, res) => {
-    return res.status(200).json({
-        success: true,
-        message: "authorizes user"
-    })
-
-})
+const checkAuth = async (req, res) => {
+    try {
+        return res.status(200).json({
+            success: true,
+            message: "authorizes user"
+        })
+    }
+    catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
 export { registerUser, loginUser, googleLogin, logoutUser, checkAuth };
