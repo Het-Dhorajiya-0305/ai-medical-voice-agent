@@ -59,6 +59,7 @@ function SignIn() {
         setLoginPassword('');
         setLoginUsername('');
         navigate('/dashboard',{state:{user:response.data.user}});
+        localStorage.setItem('refreshToken', response.data.token);
         toast.success(response.data.message, { autoClose: 1000 });
       }
     } catch (error) {
