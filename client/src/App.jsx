@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useLocation } from 'react'
 import './index.css'
 import { Route, Routes, useNavigate } from 'react-router'
 import LandingPage from './page/LandingPage'
@@ -15,27 +15,37 @@ export const backEndUrl = import.meta.env.VITE_BACKEND_URL;
 function App() {
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const checkAuth = async () => {
     try {
       const response = await axios.get(backEndUrl + '/api/user/auth', {
         withCredentials: true
-      })
+      });
 
       if (response.data.success) {
-        navigate('/dashboard');
-      }
-      else {
-        navigate('/');
+
+        if (location.pathname === '/' || location.pathname === '/signin') {
+          navigate('/dashboard');
+        }
+      } else {
+
+        if (location.pathname !== '/' && location.pathname !== '/signin') {
+          navigate('/');
+        }
       }
     } catch (error) {
-      navigate('/');
+      if (location.pathname !== '/' && location.pathname !== '/signin') {
+        navigate('/');
+      }
     }
-  }
+  };
 
   useEffect(() => {
     checkAuth();
-  }, [])
+  }, [location.pathname]);
+
+
   return (
     <div className="h-full w-full">
       <ToastContainer />
