@@ -204,6 +204,11 @@ const googleLogin = async (req, res) => {
         .status(200)
         .cookie("refreshToken", token, option)
         .redirect(`${process.env.FRONTEND_URL}/oauth/success?refreshToken=${token}`)
+        .json({
+            success: true,
+            user: loggedInUser,
+            message: "Google login successful"
+        })
 
 }
 
@@ -269,4 +274,30 @@ const checkAuth = async (req, res) => {
         })
     }
 }
-export { registerUser, loginUser, googleLogin, logoutUser, checkAuth };
+
+const Userinfo = async (req, res) => {
+    try {
+        const id = req.userId;
+
+        const user = await User.findById(id).select("-password -refreshToken");
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            user
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
+export { registerUser, loginUser, googleLogin, logoutUser, checkAuth,Userinfo };

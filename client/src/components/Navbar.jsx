@@ -8,6 +8,7 @@ import { backEndUrl } from '../App';
 function Navbar({ navItems, islogin }) {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [username, setUsername] = useState(null);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -26,11 +27,29 @@ function Navbar({ navItems, islogin }) {
             if(response.data.success)
             {
                 navigate('/');
+                localStorage.removeItem('refreshToken');
             }
         } catch (error) {
             console.log(error);
         }
     }
+
+    useEffect(async () => {
+        try {
+            const response=await axios.get(backEndUrl+'/api/user/info',{
+                withCredentials:true
+            })
+
+            if(response.data.success)
+            {
+                setUsername(response.data.user.username);
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    },[islogin])
+    
 
     return (
         <div className='fixed top-0 mx-auto px-10 z-60 gap-4 w-full flex  max-sm:px-2 bg-white py-2 shadow-md'>
@@ -59,7 +78,7 @@ function Navbar({ navItems, islogin }) {
                     {islogin ? (
                         <div className="flex items-center gap-3">
                             <button className='bg-black text-white p-2 px-4 text-[15px] font-semibold rounded-xl hover:cursor-pointer hover:bg-gray-800 transition-all duration-300 max-sm:hidden' onClick={handleLogout}>Logout</button>
-                            <Avatar name='het dhorajiya' size={45} className='rounded-full' />
+                            <Avatar name={username} size={45} className='rounded-full' />
                         </div>
                     ) :
                         (<button className='px-6 py-2 rounded-full text-white bg-blue-700 font-bold hover:cursor-pointer hover:bg-blue-600 transition-colors duration-300 w-max' onClick={onclickSignin}>

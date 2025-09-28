@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { checkAuth, googleLogin, loginUser, logoutUser, registerUser } from "../controller/userController.js";
+import { checkAuth, googleLogin, loginUser, logoutUser, registerUser, Userinfo } from "../controller/userController.js";
 import passport from "passport";
 import verifyUser from "../middleware/authUser.js";
 
@@ -10,6 +10,7 @@ userRoute.post('/register', registerUser);
 userRoute.post('/login', loginUser);
 userRoute.get('/logout',verifyUser,logoutUser);
 userRoute.get('/auth',verifyUser,checkAuth);
+userRoute.get('/info',verifyUser,Userinfo);
 
 // google auth routes
 

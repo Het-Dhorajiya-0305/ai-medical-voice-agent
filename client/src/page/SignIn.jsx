@@ -58,7 +58,7 @@ function SignIn() {
       if (response.data.success) {
         setLoginPassword('');
         setLoginUsername('');
-        navigate('/dashboard');
+        navigate('/dashboard',{state:{user:response.data.user}});
         toast.success(response.data.message, { autoClose: 1000 });
       }
     } catch (error) {
