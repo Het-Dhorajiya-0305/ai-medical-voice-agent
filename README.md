@@ -1,6 +1,6 @@
 # AI Medical Voice Agent
 
-AI Medical Voice Agent is a modern JavaScript-based application designed to enhance patient care by streamlining healthcare interactions using intelligent voice technology. This agent assists with patient triage, symptom analysis, appointment booking, and healthcare support tasks, all through natural speech interfaces.
+-  AI Medical Voice Agent is a modern JavaScript-based application designed to enhance patient care by streamlining healthcare interactions using intelligent voice technology. This agent assists with patient triage, symptom analysis, appointment booking, and healthcare support tasks, all through natural speech interfaces.
 ---
 
 ## Features
