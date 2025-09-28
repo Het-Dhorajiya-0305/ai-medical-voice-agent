@@ -20,7 +20,7 @@ userRoute.get('/auth/google',
 
 userRoute.get('/auth/google/callback', 
     passport.authenticate('google', {
-        failureRedirect: 'http://localhost:5173/login',
+        failureRedirect:`${process.env.FRONTEND_URL}/signin`,
     }),
     googleLogin
 )

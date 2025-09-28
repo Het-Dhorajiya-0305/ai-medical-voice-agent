@@ -1,6 +1,6 @@
-import { useEffect, useState, useLocation } from 'react'
+import { useEffect, useState } from 'react'
 import './index.css'
-import { Route, Routes, useNavigate } from 'react-router'
+import { Route, Routes, useNavigate,useLocation } from 'react-router-dom'
 import LandingPage from './page/LandingPage'
 import SignIn from './page/SignIn'
 import Dashboard from './page/Dashboard'
