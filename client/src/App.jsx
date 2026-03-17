@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify'
 import Auth from './page/Auth'
 import CallPage from './page/CallPage'
 import History from './page/History'
-import axios from 'axios'
+import axios from 'axios';
 
 export const backEndUrl = import.meta.env.VITE_BACKEND_URL;
 
