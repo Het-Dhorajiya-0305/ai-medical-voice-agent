@@ -9,7 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 import { toast } from 'react-toastify';
 import axios from 'axios'
 import { backEndUrl } from '../App';
-import { useNavigate } from 'react-router';
+import { data, useNavigate } from 'react-router';
 
 
 function SignIn() {
@@ -45,8 +45,6 @@ function SignIn() {
         username: loginUsername,
         password: loginPassword
       }
-
-      console.log(backEndUrl)
 
       const response = await axios.post(backEndUrl + '/api/user/login', payload, {
         headers: {

@@ -9,6 +9,8 @@ function Navbar({ navItems, islogin }) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [username, setUsername] = useState(null);
+  const [plan, setPlan] = useState({ color: "emerald", badge: "Free" }); 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -40,6 +42,10 @@ function Navbar({ navItems, islogin }) {
 
         if (response.data.success) {
           setUsername(response.data.user.username);
+          setPlan({
+            color: response.data.user.plan == 'Pro' ? 'blue' : response.data.user.plan == 'Premium' ? 'violet' : "emerald",
+            badge: response.data.user.plan || "Free"
+          })
         }
       } catch (error) {
         console.log(error);
@@ -48,6 +54,10 @@ function Navbar({ navItems, islogin }) {
 
     fetchUserInfo();
   }, [islogin]);
+
+  const handleToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   return (
     <div className="fixed top-0 mx-auto px-10 z-60 gap-4 w-full flex max-sm:px-2 bg-white py-2 shadow-md">
@@ -71,14 +81,48 @@ function Navbar({ navItems, islogin }) {
 
         <div className="flex items-center gap-3">
           {islogin ? (
-            <div className="flex items-center gap-3">
-              <button
-                className="bg-black text-white p-2 px-4 text-[15px] font-semibold rounded-xl hover:cursor-pointer hover:bg-gray-800 transition-all duration-300 max-sm:hidden"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-              {username && <Avatar name={username} size={45} className="rounded-full" />}
+            <div className="flex items-center gap-3 relative">
+
+              {username && <Avatar name={username} size={45} className="rounded-full hover:cursor-pointer hover:ring-2 hover:ring-blue-500" onClick={handleToggle} />}
+
+              {isDropdownOpen && (
+                <div className="absolute top-15 right-0 mt-2 bg-gray-300 shadow-lg rounded-lg p-4 flex flex-col gap-1 items-baseline transition-opacity duration-300">
+
+                <div className="hover:bg-gray-100 p-2 rounded-lg w-full flex items-center justify-between gap-2">
+                  <p className="flex items-center justify-between w-full text-[15px] font-semibold ">
+                    <span>
+                      {username}
+                    </span>
+                    <span
+                      className={`rounded-full border w-3 h-3 
+                        ${plan.color === "emerald"
+                          ? "border-emerald-500 bg-green-600"
+                          : plan.color === "blue"
+                            ? "border-blue-500 bg-blue-600"
+                            : "border-violet-500 bg-violet-600"
+                        }`}
+                    >
+                    </span></p>
+                </div>
+                <div className="hover:bg-gray-100 p-2 rounded-lg w-full flex items-center justify-between gap-2">
+                  <button
+                    className="text-[15px] font-semibold rounded-xl hover:cursor-pointer"
+                  >
+                    profile
+                  </button>
+                </div>
+
+                <div className="p-2 rounded-lg w-full flex items-center justify-between gap-2">
+                  <button
+                    className="bg-black text-white p-2 px-4 text-[15px] font-semibold rounded-xl hover:cursor-pointer hover:bg-gray-800 transition-all duration-300"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+
+              </div>)}
+
             </div>
           ) : (
             <button
@@ -99,9 +143,8 @@ function Navbar({ navItems, islogin }) {
 
         {/* mobile menu */}
         <div
-          className={`absolute bg-gray-300 flex flex-col gap-2 p-5 rounded-2xl ${
-            isMenuOpen ? 'top-20 right-10' : 'hidden'
-          } transition-all duration-200 sm:hidden`}
+          className={`absolute bg-gray-300 flex flex-col gap-2 p-5 rounded-2xl ${isMenuOpen ? 'top-20 right-10' : 'hidden'
+            } transition-all duration-200 sm:hidden`}
         >
           {navItems.map((item, key) => (
             <Link
@@ -113,21 +156,6 @@ function Navbar({ navItems, islogin }) {
               {item.name}
             </Link>
           ))}
-          {islogin ? (
-            <button
-              className="bg-black text-white p-2 px-4 text-[15px] font-semibold rounded-xl hover:cursor-pointer hover:bg-gray-800 transition-all duration-300"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
-          ) : (
-            <button
-              className="bg-blue-700 text-white p-2 px-4 text-[15px] font-semibold rounded-xl hover:cursor-pointer hover:bg-blue-600 transition-all duration-300"
-              onClick={onclickSignin}
-            >
-              Sign in
-            </button>
-          )}
         </div>
       </div>
     </div>

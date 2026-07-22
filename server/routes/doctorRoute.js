@@ -4,7 +4,7 @@ import { addDoctor, allDoctors, getDoctor } from "../controller/doctorController
 const doctorRoute= Router();
 
 doctorRoute.post('/add-doctor',addDoctor);
-doctorRoute.get('/doctors',allDoctors);
+doctorRoute.get('/',allDoctors);
 doctorRoute.post('/get-doctor',getDoctor);
 
 export default doctorRoute;

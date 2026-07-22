@@ -3,8 +3,10 @@ import Doctors from "../model/doctorModel.js";
 const addDoctor = async (req, res) => {
 
     try {
-        const { name, imageUrl, specialization, description, agentPrompt } = req.body;
-        if (!name || !imageUrl || !specialization || !description || !agentPrompt) {
+        const { name, imageUrl, specialization, description, agentPrompt, voiceId,requirePlan } = req.body;
+
+
+        if (!name || !imageUrl || !specialization || !description || !agentPrompt || !voiceId ||!requirePlan) {
             return res.status(400).json({
                 message: "All fields are required",
                 success: false
@@ -16,7 +18,9 @@ const addDoctor = async (req, res) => {
             imageUrl,
             specialization,
             description,
-            agentPrompt
+            agentPrompt,
+            voiceId,
+            requirePlan
         });
         if (!newDoctor) {
             return res.status(500).json({
@@ -66,34 +70,34 @@ const allDoctors = async (req, res) => {
     }
 }
 
-const getDoctor=async (req,res) => {
+const getDoctor = async (req, res) => {
     try {
-        const {name,specialization}=req.body;
+        const { name, specialization } = req.body;
 
-        if(!name && !specialization){
+        if (!name && !specialization) {
             return res.status(400).json({
-                message:"Doctor name or specialization is required",
-                success:false
+                message: "Doctor name or specialization is required",
+                success: false
             })
         }
 
-        const doctor=await Doctors.findOne({
-            $or:[
-                {name:name},
-                {specialization:specialization}
+        const doctor = await Doctors.findOne({
+            $or: [
+                { name: name },
+                { specialization: specialization }
             ]
         });
 
-        if(!doctor){
+        if (!doctor) {
             return res.status(404).json({
-                message:"Doctor not found",
-                success:false
+                message: "Doctor not found",
+                success: false
             })
         }
 
         return res.status(200).json({
-            message:"Doctor fetched successfully",
-            success:true,
+            message: "Doctor fetched successfully",
+            success: true,
             doctor
         })
 
@@ -107,4 +111,4 @@ const getDoctor=async (req,res) => {
     }
 }
 
-export { addDoctor,allDoctors,getDoctor };
+export { addDoctor, allDoctors, getDoctor };

@@ -3,6 +3,7 @@ import { doctors, symptomSpecializationMap } from '../constant'
 import axios from 'axios';
 import { backEndUrl } from '../App';
 import { useNavigate } from 'react-router';
+import { Leaf, Star, Gem } from "lucide-react";
 
 
 function Doctors() {
@@ -12,15 +13,17 @@ function Doctors() {
 
     const fetchDoctors = async () => {
         try {
-            const response = await axios.get(backEndUrl + '/api/doctor/doctors');
+            const response = await axios.get(backEndUrl + '/api/doctor/');
             if (response.data.success) {
                 setDoctorsList(response.data.doctors);
+                console.log("Fetched doctors:", response.data.doctors);
             }
 
         } catch (error) {
             console.log("Error fetching doctors:", error);
         }
     }
+
     useEffect(() => {
         fetchDoctors();
     }, [])
@@ -67,7 +70,26 @@ function Doctors() {
                     <div className="w-[300px] rounded-2xl shadow-lg bg-white pb-3" key={index}>
                         <img src={doctor.imageUrl} alt={doctor.name} className='w-[300px] h-[350px] rounded-t-2xl object-cover' />
                         <div className="p-2 h-32">
-                            <h1 className='font-bold text-lg'>{doctor.name}</h1>
+                            <div className="flex items-center justify-between">
+                                <h1 className='font-bold text-lg'>{doctor.name}</h1>
+                                {doctor.requirePlan === "Free" ? (
+                                    <span className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-500 bg-slate-900 px-3 py-1 text-[12px] font-semibold text-white">
+                                        <Leaf className="h-3 w-3 fill-emerald-500 text-emerald-500" />
+                                        FREE
+                                    </span>
+                                ) : doctor.requirePlan === "Pro" ? (
+                                    <span className="inline-flex items-center gap-2 rounded-full border-2 border-blue-500 bg-slate-900 px-3 py-1 text-[12px] font-semibold text-white">
+                                        <Star className="h-3 w-3 fill-blue-500 text-blue-500" />
+                                        PRO
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center gap-2 rounded-full border-2 border-violet-500 bg-slate-900 px-3 py-1 text-[12px] font-semibold text-white">
+                                        <Gem className="h-3 w-3 fill-violet-500 text-violet-500" />
+                                        PREMIUM
+                                    </span>
+                                )}
+
+                            </div>
                             <h2 className='font-semibold'>{doctor.specialization}</h2>
                             <p className='text-sm text-gray-500'>{doctor.description}</p>
                         </div>

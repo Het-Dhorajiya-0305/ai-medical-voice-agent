@@ -96,6 +96,7 @@ const loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
 
+
         if (!username || !password) {
             return res.status(404).json({
                 message: "Username and password are required",

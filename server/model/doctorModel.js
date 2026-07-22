@@ -25,6 +25,10 @@ const doctorSchema=new mongoose.Schema({
     voiceId:{
         type:String,
         required:true
+    },
+    requirePlan:{
+        type:String,
+        required:true
     }
 },{timestamps:true});
 

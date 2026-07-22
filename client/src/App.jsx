@@ -9,6 +9,7 @@ import Auth from './page/Auth'
 import CallPage from './page/CallPage'
 import History from './page/History'
 import axios from 'axios';
+import Subscription from './page/Subscription';
 
 export const backEndUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -54,6 +55,7 @@ function App() {
         <Route path='/signin' element={<SignIn />}></Route>
         <Route path='/dashboard' element={<Dashboard />}></Route>
         <Route path='/history' element={<History />}></Route>
+        <Route path='/subscription' element={<Subscription />}></Route>
         <Route path='/oauth/success' element={<Auth />}></Route>
         <Route path='/medical-agent/:id' element={<CallPage />}></Route>
       </Routes>
