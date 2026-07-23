@@ -8,8 +8,14 @@ import { Leaf, Star, Gem } from "lucide-react";
 
 function Doctors() {
     const [doctorsList, setDoctorsList] = useState(doctors);
+    const [userPlan, setUserPlan] = useState("Free");
     const navigate = useNavigate();
 
+    const planLevel = {
+        "Free": 0,
+        "Pro": 1,
+        "Premium": 2,
+    };
 
     const fetchDoctors = async () => {
         try {
@@ -24,7 +30,22 @@ function Doctors() {
         }
     }
 
+    const fetchUserInfo = async () => {
+        try {
+            const response = await axios.get(backEndUrl + '/api/user/info', {
+                withCredentials: true
+            });
+
+            if (response.data.success) {
+                setUserPlan(response.data.user.subscription.plan || "Free")
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
+        fetchUserInfo();
         fetchDoctors();
     }, [])
 
@@ -94,7 +115,10 @@ function Doctors() {
                             <p className='text-sm text-gray-500'>{doctor.description}</p>
                         </div>
                         <div className="flex justify-center">
-                            <button className='w-3/4 bg-black text-white p-2 px-4 text-[15px] font-semibold rounded-xl hover:cursor-pointer hover:bg-gray-800 transition-all duration-300' onClick={() => handleConsultation(doctor)}>Start Consultation</button>
+                            <button
+                                className='w-3/4 bg-black text-white p-2 px-4 text-[15px] font-semibold rounded-xl hover:cursor-pointer hover:bg-gray-800 transition-all duration-300' onClick={() => handleConsultation(doctor)}
+                                disabled={planLevel[userPlan] < planLevel[doctor.requirePlan]}
+                            >Start Consultation</button>
                         </div>
                     </div>
                 ))}

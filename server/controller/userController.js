@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken'
 import User from '../model/userModel.js';
 import validator from 'validator';
+import stripe from "stripe";
+
+
+const stripeIns = new stripe(process.env.STRIPE_SECRETE_KEY);
 
 const generateToken = async (user) => {
 
@@ -301,4 +305,123 @@ const Userinfo = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser, googleLogin, logoutUser, checkAuth,Userinfo };
+const upgradeSubscription = async (req, res) => {
+    try {
+        const { priceId } = req.body;
+
+        if (!priceId) {
+            return res.status(404).json({
+                success: false,
+                message: "priceId required ! "
+            })
+        }
+
+        const session = await stripeIns.checkout.sessions.create({
+            mode: "subscription",
+
+            line_items: [
+                {
+                    price: priceId,
+                    quantity: 1,
+                },
+            ],
+
+            success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+
+            client_reference_id: req.userId.toString(),   // user id
+        });
+
+
+        return res.status(200).json({
+            success: true,
+            message: "session created successfully!",
+            sessionUrl: session.url
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+            stack: error.stack
+        });
+    }
+}
+
+const updatePlan = async (req, res) => {
+    try {
+        const { sessionId } = req.body;
+
+        if (!sessionId) {
+            return res.status(400).json({
+                success: false,
+                message: "Session ID required"
+            });
+        }
+
+        const session = await stripeIns.checkout.sessions.retrieve(sessionId);
+
+        // Verify payment
+        if (session.payment_status !== "paid") {
+            return res.status(400).json({
+                success: false,
+                message: "Payment not completed"
+            });
+        }
+
+
+        const subscription = await stripeIns.subscriptions.retrieve(
+            session.subscription
+        );
+
+
+        const priceId = subscription.items.data[0].price.id;
+
+        const startDate = new Date(subscription.start_date * 1000);
+
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        console.log("start : ",startDate)
+        console.log("end : ",endDate)
+
+        let plan = "Free";
+
+        if (priceId === process.env.PRO_PRICE_ID)
+            plan = "Pro";
+
+        if (priceId === process.env.PREMIUM_PRICE_ID)
+            plan = "Premium";
+
+        await User.findByIdAndUpdate(req.userId, {
+            subscription: {
+                plan,
+                status: "Active",
+                stripeCustomerId: session.customer,
+                stripeSubscriptionId: session.subscription,
+                stripePriceId: priceId,
+                startDate,
+                endDate,
+                usage: {
+                    sessionsLimit: plan == 'Pro' ? 100 : plan == 'Premium' ? 500 : 10,
+                    sessionsUsed: 0
+                }
+            },
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Subscription updated successfully."
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: err.message,
+        });
+    }
+};
+
+
+
+export { registerUser, loginUser, googleLogin, logoutUser, checkAuth, Userinfo, upgradeSubscription, updatePlan };

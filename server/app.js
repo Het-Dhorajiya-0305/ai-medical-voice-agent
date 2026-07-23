@@ -1,15 +1,20 @@
 import express from "express";
-import userRoute from "./routes/userRoutes.js";
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import googleoauth from 'passport-google-oauth2'
 import passport from "passport";
 import session from "express-session";
 import { configDotenv } from "dotenv";
-import doctorRoute from "./routes/doctorRoute.js";
-import sessionRoute from "./routes/sessionRoute.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
-configDotenv();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+configDotenv({ path: path.join(__dirname, ".env") });
+
+const userRoute = (await import("./routes/userRoutes.js")).default;
+const doctorRoute = (await import("./routes/doctorRoute.js")).default;
+const sessionRoute = (await import("./routes/sessionRoute.js")).default;
 
 const app = express();
 

@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaArrowRight } from "react-icons/fa";
 import { symptomSpecializationMap, doctors } from '../constant';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { backEndUrl } from '../App';
+import { toast } from 'react-toastify';
 
 function Description({ handleVisibility, visible }) {
 
@@ -11,6 +12,31 @@ function Description({ handleVisibility, visible }) {
 
     const [details, setDetails] = useState('');
     const [suggestedDoctor, setSuggestedDoctor] = useState(null);
+    const [user, setUser] = useState(null);
+
+    const planLevel = {
+        "Free": 0,
+        "Pro": 1,
+        "Premium": 2,
+    };
+
+    const fetchUserInfo = async () => {
+        try {
+            const response = await axios.get(backEndUrl + '/api/user/info', {
+                withCredentials: true
+            });
+
+            if (response.data.success) {
+                setUser(response.data.user)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(()=>{
+        fetchUserInfo();
+    },[])
 
 
     const handleNext = async () => {
@@ -41,8 +67,20 @@ function Description({ handleVisibility, visible }) {
             console.log("Error in fetching doctor:", error);
         }
     };
-    
+
     const startconsultation = async () => {
+    
+        if(planLevel[user.subscription.plan]<planLevel[suggestedDoctor.requirePlan])
+        {
+            toast.error(`Upgrade to ${suggestedDoctor.requirePlan} Plan`)
+            return
+        }
+        if(user.subscription.usage.sessionsUsed>=user.subscription.usage.sessionsLimit)
+        {
+            toast.error(`Limit reached. Upgrade your plan`)
+            return
+        }
+
         try {
             const response = await axios.post(backEndUrl + '/api/session/create-session', { doctorId: suggestedDoctor._id, note: details }, {
                 headers: {
@@ -52,11 +90,13 @@ function Description({ handleVisibility, visible }) {
             });
 
             if (response.data.success) {
+
                 navigate(`/medical-agent/${response.data.newSession._id}`, {
                     state: {
                         doctor: suggestedDoctor
                     }
                 });
+
             }
         } catch (error) {
             console.log("Error in starting consultation:", error);

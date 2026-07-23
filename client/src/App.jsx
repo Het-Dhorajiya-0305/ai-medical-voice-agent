@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './index.css'
-import { Route, Routes, useNavigate,useLocation } from 'react-router-dom'
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom'
 import LandingPage from './page/LandingPage'
 import SignIn from './page/SignIn'
 import Dashboard from './page/Dashboard'
@@ -10,6 +10,8 @@ import CallPage from './page/CallPage'
 import History from './page/History'
 import axios from 'axios';
 import Subscription from './page/Subscription';
+import SuccessPage from './page/SuccessPage'
+import Cancelpage from './page/Cancelpage'
 
 export const backEndUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -49,7 +51,18 @@ function App() {
 
   return (
     <div className="h-full w-full">
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <Routes>
         <Route path='/' element={<LandingPage />}></Route>
         <Route path='/signin' element={<SignIn />}></Route>
@@ -58,6 +71,8 @@ function App() {
         <Route path='/subscription' element={<Subscription />}></Route>
         <Route path='/oauth/success' element={<Auth />}></Route>
         <Route path='/medical-agent/:id' element={<CallPage />}></Route>
+        <Route path='/success' element={<SuccessPage />}></Route>
+        <Route path='/cancel' element={<Cancelpage />}></Route>
       </Routes>
     </div>
   )

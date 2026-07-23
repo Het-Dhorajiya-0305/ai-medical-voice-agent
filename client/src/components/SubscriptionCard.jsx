@@ -6,8 +6,11 @@ import {
     Clock3,
     Headphones
 } from "lucide-react";
+import axios from "axios";
+import { backEndUrl } from "../App";
 
 function SubscriptionCard({ plan }) {
+
     const border =
         plan.color === "emerald"
             ? "hover:border-emerald-500"
@@ -21,6 +24,28 @@ function SubscriptionCard({ plan }) {
             : plan.color === "blue"
                 ? "bg-blue-600 hover:bg-blue-700 hover:cursor-pointer"
                 : "bg-violet-600 hover:bg-violet-700 hover:cursor-pointer";
+
+    const handleSubscribe = async (priceId) => {
+        try {
+            const response = await axios.post(backEndUrl + "/api/user/create-checkout-session", { priceId }, {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true
+            })
+
+            if (response.data.success) {
+                const session = await response.data.sessionUrl;
+
+                window.location.href=session;
+            }
+
+
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <div
@@ -109,6 +134,7 @@ function SubscriptionCard({ plan }) {
 
                 <button
                     className={`mt-6 sm:mt-10 w-full rounded-xl py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-white transition ${button}`}
+                    onClick={()=>handleSubscribe(plan.priceId)}
                 >
                     {plan.price === 0
                         ? "Current Plan"

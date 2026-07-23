@@ -43,8 +43,8 @@ function Navbar({ navItems, islogin }) {
         if (response.data.success) {
           setUsername(response.data.user.username);
           setPlan({
-            color: response.data.user.plan == 'Pro' ? 'blue' : response.data.user.plan == 'Premium' ? 'violet' : "emerald",
-            badge: response.data.user.plan || "Free"
+            color: response.data.user.subscription.plan == 'Pro' ? 'blue' : response.data.user.subscription.plan == 'Premium' ? 'violet' : "emerald",
+            badge: response.data.user.subscription.plan || "Free"
           })
         }
       } catch (error) {
@@ -63,7 +63,7 @@ function Navbar({ navItems, islogin }) {
     <div className="fixed top-0 mx-auto px-10 z-60 gap-4 w-full flex max-sm:px-2 bg-white py-2 shadow-md">
       <div className="relative w-full z-30 mx-auto flex items-center justify-between px-6">
         <Link className="flex items-center">
-          <img src="https://res.cloudinary.com/dhxwyq122/image/upload/v1757100386/Gemini_Generated_Image_m82yqvm82yqvm82y_swapw0.png" alt="logo" className="max-w-35" />
+          <img src="https://res.cloudinary.com/dhxwyq122/image/upload/v1784824358/ChatGPT_Image_Jul_23_2026_10_00_51_PM_mvbaxd.png" alt="logo" className="max-w-35" />
         </Link>
 
         {/* laptop view */}
